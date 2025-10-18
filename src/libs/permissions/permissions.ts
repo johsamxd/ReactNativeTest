@@ -1,4 +1,5 @@
 import { PermissionsAndroid, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const requestLocationPermission = async (): Promise<boolean> => {
   if (Platform.OS === 'android') {
@@ -12,6 +13,10 @@ export const requestLocationPermission = async (): Promise<boolean> => {
           buttonNegative: 'Отмена',
           buttonPositive: 'OK',
         },
+      );
+      AsyncStorage.setItem(
+        'ACCESS_FINE_LOCATION',
+        PermissionsAndroid.RESULTS.GRANTED,
       );
       return granted === PermissionsAndroid.RESULTS.GRANTED;
     } catch (err) {

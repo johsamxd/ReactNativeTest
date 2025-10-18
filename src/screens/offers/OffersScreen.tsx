@@ -1,6 +1,15 @@
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Alert, Button, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  Button,
+  PermissionsAndroid,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Geolocation, {
   GeolocationResponse,
 } from '@react-native-community/geolocation';
@@ -9,6 +18,7 @@ import { requestLocationPermission } from '../../libs/permissions/permissions';
 import { useQuery } from '@tanstack/react-query';
 import { getOffers } from '../../api/offersApi';
 import OfferCard from './components/OfferCard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function OffersScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
@@ -32,60 +42,51 @@ export default function OffersScreen() {
     );
   };
 
-  const { data, refetch } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['offers', location?.coords.latitude, location?.coords.longitude],
     queryFn: () =>
       getOffers(location!.coords.latitude, location!.coords.longitude),
     enabled: !!location,
   });
 
-  console.log(data);
-
   useEffect(() => {
     (async () => {
-      const granted = await requestLocationPermission();
-      if (granted) {
-        getCurrentLocation();
-      } else {
-        setError('Разрешение на геолокацию отклонено');
+      try {
+        if (Platform.OS === 'ios') {
+          getCurrentLocation();
+          return;
+        }
+
+        const savedPermission = await AsyncStorage.getItem(
+          'ACCESS_FINE_LOCATION',
+        );
+        if (savedPermission === PermissionsAndroid.RESULTS.GRANTED) {
+          getCurrentLocation();
+          return;
+        }
+
+        const granted = await requestLocationPermission();
+        if (granted) {
+          getCurrentLocation();
+        } else {
+          setError('Разрешение на геолокацию отклонено');
+        }
+      } catch (error) {
+        console.error('Ошибка при загрузке:', error);
+        setError('Ошибка загрузки геолокации');
       }
     })();
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text>Home screen</Text>
-      {location ? (
-        <Text>
-          Широта: {location.coords.latitude}, Долгота:{' '}
-          {location.coords.longitude}
-        </Text>
-      ) : error ? (
-        <Text style={{ color: 'red' }}>Ошибка: {error}</Text>
-      ) : (
-        <Text>Получение координат...</Text>
-      )}
+    <ScrollView contentContainerStyle={styles.container}>
+      {(isLoading || !location) && <Text>Загрузка...</Text>}
       {data && data?.map(offer => <OfferCard key={offer.id} offer={offer} />)}
-      <Button
-        title="Get Location"
-        onPress={() => {
-          setLocation(null);
-          getCurrentLocation();
-        }}
-      />
       <Button
         title="Go to offer"
         onPress={() => navigation.navigate('Offer')}
       />
-
-      <Button
-        title="Refetch"
-        onPress={() => {
-          console.log('refetching');
-          refetch();
-        }}
-      />
-    </View>
+    </ScrollView>
   );
 }
 
