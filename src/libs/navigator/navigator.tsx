@@ -1,15 +1,15 @@
 import { createStaticNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { HomeScreen, OfferScreen } from '../../screens';
+import { OffersScreen, OffersDetailScreen } from '../../screens';
 
 const RootStack = createNativeStackNavigator({
   screens: {
     Home: {
-      screen: HomeScreen,
+      screen: OffersScreen,
       options: { headerShown: false },
     },
     Offer: {
-      screen: OfferScreen,
+      screen: OffersDetailScreen,
     },
   },
 });

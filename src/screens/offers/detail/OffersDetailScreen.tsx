@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function OfferScreen() {
+export default function OffersDetailScreen() {
   return (
     <View style={styles.container}>
       <Text>Offer screen</Text>

@@ -6,8 +6,11 @@ import Geolocation, {
 } from '@react-native-community/geolocation';
 import { useEffect, useState } from 'react';
 import { requestLocationPermission } from '../../libs/permissions/permissions';
+import { useQuery } from '@tanstack/react-query';
+import { getOffers } from '../../api/offersApi';
+import OfferCard from './components/OfferCard';
 
-export default function HomeScreen() {
+export default function OffersScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [location, setLocation] = useState<GeolocationResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +31,15 @@ export default function HomeScreen() {
       },
     );
   };
+
+  const { data, refetch } = useQuery({
+    queryKey: ['offers', location?.coords.latitude, location?.coords.longitude],
+    queryFn: () =>
+      getOffers(location!.coords.latitude, location!.coords.longitude),
+    enabled: !!location,
+  });
+
+  console.log(data);
 
   useEffect(() => {
     (async () => {
@@ -53,10 +65,25 @@ export default function HomeScreen() {
       ) : (
         <Text>Получение координат...</Text>
       )}
-      <Button title="Get Location" onPress={getCurrentLocation} />
+      {data && data?.map(offer => <OfferCard key={offer.id} offer={offer} />)}
+      <Button
+        title="Get Location"
+        onPress={() => {
+          setLocation(null);
+          getCurrentLocation();
+        }}
+      />
       <Button
         title="Go to offer"
         onPress={() => navigation.navigate('Offer')}
+      />
+
+      <Button
+        title="Refetch"
+        onPress={() => {
+          console.log('refetching');
+          refetch();
+        }}
       />
     </View>
   );
