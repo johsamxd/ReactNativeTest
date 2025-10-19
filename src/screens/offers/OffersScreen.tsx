@@ -17,6 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getOffers } from '../../api/offersApi';
 import OfferCard from './components/OfferCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import OfferCardPlaceholder from './components/OfferCardPlaceholder';
 
 export default function OffersScreen() {
   const [location, setLocation] = useState<GeolocationResponse | null>(null);
@@ -49,6 +50,7 @@ export default function OffersScreen() {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    getCurrentLocation();
     refetch();
     setTimeout(() => {
       setRefreshing(false);
@@ -84,30 +86,37 @@ export default function OffersScreen() {
     })();
   }, []);
 
-  if (isLoading || !location) return <Text>Загрузка...</Text>;
-  if (error) return <Text>{error}</Text>;
+  if (error)
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>Произошла ошибка!</Text>
+      </View>
+    );
 
-  console.log(data);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Доступные смены</Text>
-      <FlatList
-        data={data || []}
-        renderItem={({ item }) => <OfferCard offer={item} />}
-        keyExtractor={item => item.id}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>
-              К сожалению, рядом нет доступных смен
-            </Text>
-          </View>
-        }
-        style={styles.list}
-        contentContainerStyle={styles.listContent}
-      />
+      {isLoading || !location ? (
+        new Array(8).fill(0).map((_, i) => <OfferCardPlaceholder key={i} />)
+      ) : (
+        <FlatList
+          data={data || []}
+          renderItem={({ item }) => <OfferCard offer={item} />}
+          keyExtractor={item => item.id}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                К сожалению, рядом нет доступных смен
+              </Text>
+            </View>
+          }
+          style={styles.list}
+          contentContainerStyle={styles.listContent}
+        />
+      )}
     </View>
   );
 }
