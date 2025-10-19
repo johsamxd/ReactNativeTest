@@ -1,11 +1,9 @@
-import { ParamListBase, useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
   Alert,
-  Button,
+  FlatList,
   PermissionsAndroid,
   Platform,
-  ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -21,7 +19,6 @@ import OfferCard from './components/OfferCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function OffersScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [location, setLocation] = useState<GeolocationResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,7 +39,7 @@ export default function OffersScreen() {
     );
   };
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['offers', location?.coords.latitude, location?.coords.longitude],
     queryFn: () =>
       getOffers(location!.coords.latitude, location!.coords.longitude),
@@ -78,22 +75,31 @@ export default function OffersScreen() {
     })();
   }, []);
 
+  if (isLoading || !location) return <Text>Загрузка...</Text>;
+  if (error) return <Text>{error}</Text>;
+
+  console.log(data);
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {(isLoading || !location) && <Text>Загрузка...</Text>}
-      {data && data?.map(offer => <OfferCard key={offer.id} offer={offer} />)}
-      <Button
-        title="Go to offer"
-        onPress={() => navigation.navigate('Offer')}
+    <View style={styles.container}>
+      <Text style={styles.title}>Доступные смены</Text>
+      <FlatList
+        data={data}
+        renderItem={({ item }) => <OfferCard offer={item} />}
+        keyExtractor={item => item.id}
       />
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingBottom: '12%',
+  },
+  title: {
+    fontWeight: 600,
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 20,
   },
 });

@@ -1,5 +1,5 @@
-import { StatusBar, useColorScheme } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StatusBar, StyleSheet, useColorScheme } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Navigator } from './src/libs/navigator/navigator';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -18,11 +18,21 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <Navigator />
+        <SafeAreaView style={styles.container} edges={['top']}>
+          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+          <Navigator />
+        </SafeAreaView>
       </SafeAreaProvider>
     </QueryClientProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#F4F4F4',
+    flex: 1,
+    paddingTop: StatusBar.currentHeight,
+  },
+});
 
 export default App;

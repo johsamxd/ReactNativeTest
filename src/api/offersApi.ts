@@ -10,7 +10,7 @@ export interface Offer {
   customerFeedbacksCount: string;
   customerRating: number | null;
   dateStartByCity: string; //date only
-  id: number;
+  id: string;
   isPromotionEnabled: boolean;
   logo: string;
   planWorkers: number;
