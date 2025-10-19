@@ -34,18 +34,22 @@ export const getOffers = async (
 ): Promise<Offer[]> => {
   try {
     // Актуальная геолокация
-    // const response = await fetch(
-    //   `https://mobile.handswork.pro/api/offers/map-list?latitude=${latitude}&longitude=${longitude}`,
-    // );
-
-    // Для тестовых данных
     const response = await fetch(
-      `https://mobile.handswork.pro/api/shifts/map-list-unauthorized?latitude=45.039268&longitude=38.987221`,
+      `https://mobile.handswork.pro/api/offers/map-list-unauthorized?latitude=${latitude}&longitude=${longitude}`,
     );
+    console.log('latitude', latitude);
+    console.log('longitude', longitude);
+    console.log(
+      `https://mobile.handswork.pro/api/offers/map-list-unauthorized?latitude=${latitude}&longitude=${longitude}`,
+    );
+    // Для тестовых данных
+    // const response = await fetch(
+    //   `https://mobile.handswork.pro/api/shifts/map-list-unauthorized?latitude=45.039268&longitude=38.987221`,
+    // );
 
     const result = await response.json();
 
-    return result.data;
+    return result.data || [];
   } catch (error) {
     console.error('Error in getOffers:', error);
     throw error;
