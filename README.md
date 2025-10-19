@@ -52,3 +52,15 @@ UI, организацию кода, структуру проекта и дру
 - В корне репозитория файл README.md с описанием задания (можно использовать этот текст).
 
 ---
+
+## Результат
+
+![Permission request](image.png)
+
+![Loading](image-1.png)
+
+![List of offers](image-2.png)
+
+![Detail page](image-3.png)
+
+![Apply notification](image-4.png)

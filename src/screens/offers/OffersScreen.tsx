@@ -9,7 +9,6 @@ import { locationStore } from '../../stores/LocationStore';
 
 const OffersScreen = observer(() => {
   const [refreshing, setRefreshing] = useState(false);
-  console.log(locationStore.location?.coords.latitude);
   const { data, isLoading, refetch } = useQuery({
     queryKey: [
       'offers',
