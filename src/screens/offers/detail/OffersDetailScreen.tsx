@@ -150,7 +150,7 @@ export default function OffersDetailScreen() {
             ],
           );
         }}
-        disabled={offer.currentWorkers === offer.planWorkers}
+        // disabled={offer.currentWorkers === offer.planWorkers}
         buttonStyle={{ marginBottom: 10 }}
       />
     </View>

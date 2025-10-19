@@ -1,56 +1,32 @@
-import {
-  Alert,
-  FlatList,
-  PermissionsAndroid,
-  Platform,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import Geolocation, {
-  GeolocationResponse,
-} from '@react-native-community/geolocation';
+import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
-import { requestLocationPermission } from '../../libs/permissions/permissions';
 import { useQuery } from '@tanstack/react-query';
 import { getOffers } from '../../api/offersApi';
 import OfferCard from './components/OfferCard';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import OfferCardPlaceholder from './components/OfferCardPlaceholder';
+import { observer } from 'mobx-react-lite';
+import { locationStore } from '../../stores/LocationStore';
 
-export default function OffersScreen() {
-  const [location, setLocation] = useState<GeolocationResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
+const OffersScreen = observer(() => {
   const [refreshing, setRefreshing] = useState(false);
-
-  const getCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        setLocation(position);
-      },
-      error => {
-        setError(error.message);
-        Alert.alert('Ошибка', error.message);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 10000,
-      },
-    );
-  };
-
+  console.log(locationStore.location?.coords.latitude);
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['offers', location?.coords.latitude, location?.coords.longitude],
+    queryKey: [
+      'offers',
+      locationStore.location?.coords.latitude,
+      locationStore.location?.coords.longitude,
+    ],
     queryFn: () =>
-      getOffers(location!.coords.latitude, location!.coords.longitude),
-    enabled: !!location,
+      getOffers(
+        locationStore.location!.coords.latitude,
+        locationStore.location!.coords.longitude,
+      ),
+    enabled: !!locationStore.location,
   });
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    getCurrentLocation();
+    locationStore.getCurrentLocation();
     refetch();
     setTimeout(() => {
       setRefreshing(false);
@@ -58,45 +34,26 @@ export default function OffersScreen() {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      try {
-        if (Platform.OS === 'ios') {
-          getCurrentLocation();
-          return;
-        }
+    locationStore.startTracking();
 
-        const savedPermission = await AsyncStorage.getItem(
-          'ACCESS_FINE_LOCATION',
-        );
-        if (savedPermission === PermissionsAndroid.RESULTS.GRANTED) {
-          getCurrentLocation();
-          return;
-        }
-
-        const granted = await requestLocationPermission();
-        if (granted) {
-          getCurrentLocation();
-        } else {
-          setError('Разрешение на геолокацию отклонено');
-        }
-      } catch (error) {
-        console.error('Ошибка при загрузке:', error);
-        setError('Ошибка загрузки геолокации');
-      }
-    })();
+    return () => {
+      locationStore.stopTracking();
+    };
   }, []);
 
-  if (error)
+  if (locationStore.error)
     return (
       <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>Произошла ошибка!</Text>
+        <Text style={styles.emptyText}>
+          Произошла ошибка: {locationStore.error}
+        </Text>
       </View>
     );
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Доступные смены</Text>
-      {isLoading || !location ? (
+      {isLoading || !locationStore.location ? (
         new Array(8).fill(0).map((_, i) => <OfferCardPlaceholder key={i} />)
       ) : (
         <FlatList
@@ -119,7 +76,9 @@ export default function OffersScreen() {
       )}
     </View>
   );
-}
+});
+
+export default OffersScreen;
 
 const styles = StyleSheet.create({
   container: {
