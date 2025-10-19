@@ -11,7 +11,7 @@ export default function OfferCard({ offer }: { offer: Offer }) {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => navigation.navigate('Offer', { offer })}
+      onPress={() => navigation.navigate('OfferDetail', { offer })}
     >
       <View style={styles.leftSide}>
         <Image style={styles.logo} source={{ uri: offer?.logo }} />
@@ -25,7 +25,7 @@ export default function OfferCard({ offer }: { offer: Offer }) {
             alignItems: 'center',
           }}
         >
-          <Icon type="star" />
+          <Icon type="star" color="yellow" />
           <Text
             style={{
               fontSize: 12,

@@ -1,21 +1,20 @@
-import { useQuery } from '@tanstack/react-query';
 import { View, StyleSheet, Animated } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { useEffect, useRef } from 'react';
 
-/** Icon types array
- * <h1> ! DO NOT EDIT MANUALLY ! </h1>
- * */
-export const IconTypes = ['star', 'clock', 'calendar', 'users'] as const;
+export const IconTypes = [
+  'star',
+  'clock',
+  'calendar',
+  'users',
+  'location',
+  'wallet',
+  'chevron',
+] as const;
 
-/** Icon types */
 export type IconType = (typeof IconTypes)[number];
-
-/** Icon colors */
-export type IconColor = 'white' | 'light' | 'dark' | 'main' | 'danger';
-
-/** Icon sizes */
-export type IconSize = 'sm' | 'md' | 'lg';
+export type IconColor = 'light' | 'primary' | 'yellow';
+export type IconSize = 'sm' | 'md' | 'lg' | 'xl';
 
 export interface IconProps {
   type: IconType;
@@ -28,6 +27,9 @@ const iconsMap: Record<IconType, string> = {
   clock: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg>`,
   calendar: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>`,
   users: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>`,
+  location: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>`,
+  wallet: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet-icon lucide-wallet"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>`,
+  chevron: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>`,
 };
 
 interface ColorMapping {
@@ -35,20 +37,19 @@ interface ColorMapping {
 }
 
 const colorToStyle = new Map<IconColor, ColorMapping>([
-  ['white', { color: '#FFFFFF' }],
   ['light', { color: '#A1A1A1' }],
-  ['main', { color: '#007AFF' }],
-  ['dark', { color: '#494949' }],
-  ['danger', { color: '#FF3B30' }],
+  ['primary', { color: '#283466' }],
+  ['yellow', { color: '#ebbd34' }],
 ]);
 
 const sizeToStyle = new Map<IconSize, { width: number; height: number }>([
   ['sm', { width: 8, height: 8 }],
   ['md', { width: 12, height: 12 }],
   ['lg', { width: 16, height: 16 }],
+  ['xl', { width: 32, height: 32 }],
 ]);
 
-export function Icon({ type, size = 'md', color = 'main' }: IconProps) {
+export function Icon({ type, size = 'md', color = 'primary' }: IconProps) {
   const data = iconsMap[type];
   const isLoading = !data;
 

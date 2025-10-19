@@ -3,7 +3,6 @@ import {
   FlatList,
   PermissionsAndroid,
   Platform,
-  StatusBar,
   StyleSheet,
   Text,
   View,

@@ -1,14 +1,20 @@
 import { createStaticNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { OffersScreen, OffersDetailScreen } from '../../screens';
+import { Offer } from '../../api/offersApi';
 
-const RootStack = createNativeStackNavigator({
+export type RootStackParamList = {
+  Offers: undefined;
+  OfferDetail: { offer: Offer };
+};
+
+const RootStack = createNativeStackNavigator<RootStackParamList>({
   screens: {
-    Home: {
+    Offers: {
       screen: OffersScreen,
       options: { headerShown: false },
     },
-    Offer: {
+    OfferDetail: {
       screen: OffersDetailScreen,
     },
   },
