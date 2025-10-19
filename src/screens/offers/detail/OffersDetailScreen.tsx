@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 10,
   },
-
   card: {
     backgroundColor: 'white',
     display: 'flex',

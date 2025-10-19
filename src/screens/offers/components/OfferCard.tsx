@@ -13,7 +13,7 @@ export default function OfferCard({ offer }: { offer: Offer }) {
       style={styles.container}
       onPress={() => navigation.navigate('OfferDetail', { offer })}
     >
-      <View style={styles.leftSide}>
+      <View style={styles.leftContainer}>
         <Image style={styles.logo} source={{ uri: offer?.logo }} />
 
         <View
@@ -22,7 +22,6 @@ export default function OfferCard({ offer }: { offer: Offer }) {
             flexDirection: 'row',
             gap: 2,
             justifyContent: 'center',
-            alignItems: 'center',
           }}
         >
           <Icon type="star" color="yellow" />
@@ -48,20 +47,12 @@ export default function OfferCard({ offer }: { offer: Offer }) {
         </Text>
       </View>
 
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 5,
-          width: '80%',
-        }}
-      >
+      <View style={styles.rightContainer}>
         <View
           style={{
             display: 'flex',
             flexDirection: 'row',
             gap: 5,
-            alignItems: 'baseline',
           }}
         >
           <Text style={styles.title}>
@@ -73,72 +64,27 @@ export default function OfferCard({ offer }: { offer: Offer }) {
           {offer?.isPromotionEnabled && <Tag text={'VIP'} />}
         </View>
 
-        <View style={{ display: 'flex', paddingRight: 10 }}>
+        <View>
           <Text>{offer?.companyName}</Text>
           <Text style={styles.smallText}>{offer?.address}</Text>
         </View>
 
         <Text style={{ color: 'green' }}>{offer?.priceWorker + ' ₽'}</Text>
 
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            gap: 10,
-          }}
-        >
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              gap: 4,
-              alignItems: 'center',
-            }}
-          >
+        <View style={styles.line}>
+          <View style={styles.line}>
             <Icon type="clock" color="light" />
-            <Text
-              style={{
-                fontSize: 12,
-                color: '#A1A1A1',
-              }}
-            >
+            <Text style={styles.lineText}>
               {offer.timeStartByCity + ' - ' + offer.timeEndByCity}
             </Text>
           </View>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              gap: 4,
-              alignItems: 'center',
-            }}
-          >
+          <View style={styles.line}>
             <Icon type="calendar" color="light" />
-            <Text
-              style={{
-                fontSize: 12,
-                color: '#A1A1A1',
-              }}
-            >
-              {offer.dateStartByCity}
-            </Text>
+            <Text style={styles.lineText}>{offer.dateStartByCity}</Text>
           </View>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              gap: 4,
-              alignItems: 'center',
-            }}
-          >
+          <View style={styles.line}>
             <Icon type="users" color="light" />
-            <Text
-              style={{
-                fontSize: 12,
-                color: '#A1A1A1',
-              }}
-            >
+            <Text style={styles.lineText}>
               {offer.currentWorkers + '/' + offer.planWorkers}
             </Text>
           </View>
@@ -159,14 +105,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 12,
   },
-  leftSide: {
+  leftContainer: {
     width: '20%',
     display: 'flex',
     justifyContent: 'center',
   },
+  rightContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 5,
+    width: '80%',
+  },
   logo: {
-    width: 50,
-    height: 50,
+    width: 64,
+    height: 64,
     borderRadius: 8,
     alignSelf: 'center',
     marginBottom: 5,
@@ -177,5 +129,15 @@ const styles = StyleSheet.create({
   },
   smallText: {
     fontSize: 12,
+  },
+  line: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 4,
+    alignItems: 'center',
+  },
+  lineText: {
+    fontSize: 12,
+    color: '#A1A1A1',
   },
 });
