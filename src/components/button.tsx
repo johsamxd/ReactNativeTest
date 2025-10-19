@@ -12,6 +12,7 @@ interface ButtonProps {
   onPress: () => void;
   buttonStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  disabled?: boolean;
 }
 
 export default function Button({
@@ -19,15 +20,18 @@ export default function Button({
   onPress,
   buttonStyle,
   textStyle,
+  disabled,
 }: ButtonProps) {
   return (
     <Pressable
       style={({ pressed }) => [
         styles.button,
         buttonStyle,
+        disabled && styles.buttonDisabled,
         pressed && styles.buttonPressed,
       ]}
       onPress={onPress}
+      disabled={disabled}
     >
       <Text style={[styles.buttonText, textStyle]}>{title}</Text>
     </Pressable>
@@ -50,5 +54,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 700,
+  },
+  buttonDisabled: {
+    backgroundColor: '#ccc',
   },
 });

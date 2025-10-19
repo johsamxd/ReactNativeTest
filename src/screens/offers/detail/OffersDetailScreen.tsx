@@ -1,6 +1,13 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useEffect } from 'react';
-import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { WorkType } from '../../../api/offersApi';
 import { RootStackParamList } from '../../../libs/navigator/navigator';
 import { Icon } from '../../../components/icon';
@@ -79,7 +86,7 @@ export default function OffersDetailScreen() {
           </View>
         </View>
 
-        <Pressable
+        <TouchableOpacity
           style={[
             styles.card,
             { flexDirection: 'row', justifyContent: 'space-between' },
@@ -125,7 +132,7 @@ export default function OffersDetailScreen() {
           <View style={{ alignSelf: 'center' }}>
             <Icon type="chevron" color="light" size="xl" />
           </View>
-        </Pressable>
+        </TouchableOpacity>
       </View>
       <Button
         title="Записаться"
@@ -143,6 +150,7 @@ export default function OffersDetailScreen() {
             ],
           );
         }}
+        disabled={offer.currentWorkers === offer.planWorkers}
         buttonStyle={{ marginBottom: 10 }}
       />
     </View>
