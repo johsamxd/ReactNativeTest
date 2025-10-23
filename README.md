@@ -55,12 +55,12 @@ UI, организацию кода, структуру проекта и дру
 
 ## Результат
 
-![Permission request](image.png)
+![Permission request](/screenshots/image.png)
 
-![Loading](image-1.png)
+![Loading](/screenshots/image-1.png)
 
-![List of offers](image-2.png)
+![List of offers](/screenshots/image-2.png)
 
-![Detail page](image-3.png)
+![Detail page](/screenshots/image-3.png)
 
-![Apply notification](image-4.png)
+![Apply notification](/screenshots/image-4.png)
